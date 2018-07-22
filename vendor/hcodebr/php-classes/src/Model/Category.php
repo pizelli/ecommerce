@@ -26,6 +26,7 @@ class Category extends Model{
             ":descategory" => $this->getdescategory()
         ));
         $this->setData($res[0]);
+        Category::updateFile();
     }
 
     public function get($id)
@@ -37,14 +38,14 @@ class Category extends Model{
         $this->setData($res[0]);
     }
 
-    public function update()
+    public static function updateFile()
     {
-        $sql = new Sql;
-        $res = $sql->query("UPDATE tb_categories SET descategory = :descategory WHERE idcategory = :id", array(
-            ":descategory"=>$this->descategory(),
-            ":id" => $this->idcategory()
-        ));
-        $this->setData($res[0]);
+        $cats = Category::listAll();
+        $html = [];
+        foreach ($cats as $row) {
+            array_push($html, '<li><a href="/categories/'. $row['idcategory'] .'">'. $row['descategory'] .'</a></li>');
+        }
+        file_put_contents($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'views'. DIRECTORY_SEPARATOR . 'categories-menu.html', implode(PHP_EOL, $html));
     }
 
     public function delete()
@@ -53,6 +54,7 @@ class Category extends Model{
         $sql->query("DELETE FROM tb_categories WHERE idcategory = :id", array(
             ":id" => $this->getidcategory()
         ));
+        Category::updateFile();
     }
 
 }
