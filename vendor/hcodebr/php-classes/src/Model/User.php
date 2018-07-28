@@ -173,7 +173,8 @@ class User extends Model{
                 $dataRecovery = $res2[0];
                 // $code = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, User::SECRECT, $dataRecovery['idrecovery'], MCRYPT_MODE_ECB));
                 $code = base64_encode($dataRecovery['idrecovery']); // TODO: Verificar uma forma de criptogravar e decriptografar
-                $link = "http://store.curso.com.br/admin/forgot/reset?code={$code}";
+                $pathLink = ($data['inadmin'] === true) ? 'admin/' : '';
+                $link = "http://store.curso.com.br/{$pathLink}forgot/reset?code={$code}";
                 $mailer = new Mailer($data['desemail'], $data['desperson'], "Redefinir senha da Loja Hortfruit", "forgot",
                     array(
                         "name"=>$data['desperson'],
