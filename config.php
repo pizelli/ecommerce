@@ -23,6 +23,17 @@ function getUserName()
     return $user->getdesperson();
 }
 
+function onlyNumbers($str){
+    preg_match_all("/\d+/", $str, $arr);
+    $res = implode("", $arr[0]);
+    return $res;
+}
+
+function goURL($url, $stop = true){
+    header("Location: {$url}");
+    if($stop) exit;
+}
+
 
 
 

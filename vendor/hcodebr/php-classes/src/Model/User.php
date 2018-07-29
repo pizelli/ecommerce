@@ -12,6 +12,7 @@ class User extends Model{
     const SECRECT = "Hc0d3PHP7_S3Cr3t";
     const ERROR = "UserError";
     const ERROR_REGISTER = "UserErrorRegister";
+    const SUCCESS = "UserSucess";
 
     public static function getFromSession()
     {
@@ -130,12 +131,18 @@ class User extends Model{
             ":iduser" => $this->getiduser(),
             ":desperson" => utf8_decode($this->getdesperson()),
             ":deslogin" => $this->getdeslogin(),
-            ":despassword" => User::getPasswordHash($this->getdespassword()),
+            ":despassword" => $this->getdespassword(),
             ":desemail" => $this->getdesemail(),
             ":nrphone" => $this->getnrphone(),
             ":inadmin" => $this->getinadmin()
         ));
         $this->setData($res[0]);
+        $this->updateSession();
+    }
+
+    private function updateSession()
+    {
+        $_SESSION[User::SESSION] = $this->getValues();
     }
 
     public function delete()
@@ -246,6 +253,23 @@ class User extends Model{
     {
         $_SESSION[User::ERROR] = null;
     }
+
+    public static function setSuccess($msg)
+    {
+        $_SESSION[User::SUCCESS] = $msg;
+    }
+
+    public static function getSuccess()
+    {
+        $msg = (isset($_SESSION[User::SUCCESS]) && $_SESSION[User::SUCCESS]) ? $_SESSION[User::SUCCESS] : '';
+        User::clearSuccess();
+        return $msg;
+    }
+
+    public static function clearSuccess()
+    {
+        $_SESSION[User::SUCCESS] = null;
+    }
     
     public static function setErrorRegister($msg)
     {
@@ -264,11 +288,14 @@ class User extends Model{
         $_SESSION[User::ERROR_REGISTER] = null;
     }
 
-    public static function checkLoginExist($login)
+    public static function checkLoginExist($email)
     {
         $sql = new Sql;
-        $res = $sql->select("SELECT * FROM tb_users WHERE deslogin = :deslogin", [
-            ':deslogin' => $login
+        $res = $sql->select("
+            SELECT * FROM tb_users a 
+            INNER JOIN tb_persons b USING(idperson) 
+            WHERE a.deslogin = :email OR b.desemail = :email", [
+            ':email' => $email
         ]);
         return (count($res) > 0);
     }

@@ -9,11 +9,16 @@ $app = new \Slim\Slim();
 
 $app->config('debug', true);
 
-require_once "site.php";
-require_once "admin.php";
-require_once "admin-users.php";
-require_once "admin-categories.php";
-require_once "admin-products.php";
+require_once "routes" . DS . "site.php";
+require_once "routes" . DS . "site-categories.php";
+require_once "routes" . DS . "site-products.php";
+require_once "routes" . DS . "site-cart.php";
+require_once "routes" . DS . "site-checkout.php";
+require_once "routes" . DS . "site-client.php";
+require_once "routes" . DS . "admin.php";
+require_once "routes" . DS . "admin-users.php";
+require_once "routes" . DS . "admin-categories.php";
+require_once "routes" . DS . "admin-products.php";
 
 $app->run();
 ?>
