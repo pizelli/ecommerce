@@ -4,6 +4,8 @@ use \Hcode\Page;
 use \Hcode\Model\User;
 use \Hcode\Model\Address;
 use \Hcode\Model\Cart;
+use \Hcode\Model\Order;
+use \Hcode\Model\OrderStatus;
 
 
 $app->get("/checkout", function(){
@@ -56,10 +58,25 @@ $app->post("/checkout", function(){
         goURL("/checkout");
     }
     $user = User::getFromSession();
+
     $address = new Address;
     $_POST['deszipcode'] = $_POST['zipcode'];
     $_POST['idperson'] = $user->getidperson();
     $address->setData($_POST);
     $address->save();
-    goURL("/order");
+
+    $cart = Cart::getFromSession();
+    $cart->getCalculateTotal();
+
+    $order = new Order;
+    $order->setData([
+        'idcart' => $cart->getidcart(),
+        'idaddress' => $address->getidaddress(),
+        'iduser' => $user->getiduser(),
+        'idstatus' => OrderStatus::EM_ABERTO,
+        'vltotal' => ($cart->getvltotal())
+    ]);
+    $order->save();
+
+    goURL("/order/".$order->getidorder());
 });
