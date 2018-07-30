@@ -19,8 +19,7 @@ $app->post("/login", function(){
     }catch (Exception $e) {
         User::setError($e->getMessage());
     }
-    header("Location: /checkout");
-    exit;
+    goURL('/profile');
 });
 
 // Logout Cliente
@@ -71,7 +70,7 @@ $app->post("/register", function(){
     $user->setData($dados);
     $user->save();
     User::login($post['email'], $post['password']);
-    header("Location: /checkout");
+    header("Location: /profile");
     exit;
 });
 
