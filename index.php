@@ -21,6 +21,7 @@ require_once "routes" . DS . "admin.php";
 require_once "routes" . DS . "admin-users.php";
 require_once "routes" . DS . "admin-categories.php";
 require_once "routes" . DS . "admin-products.php";
+require_once "routes" . DS . "admin-orders.php";
 
 $app->run();
 ?>
