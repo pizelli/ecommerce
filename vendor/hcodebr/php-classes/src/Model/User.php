@@ -5,6 +5,7 @@ namespace Hcode\Model;
 use \Hcode\DB\Sql;
 use \Hcode\Model;
 use \Hcode\Mailer;
+use \Hcode\Encryption;
 
 class User extends Model{
 
@@ -178,10 +179,10 @@ class User extends Model{
             else
             {
                 $dataRecovery = $res2[0];
-                // $code = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, User::SECRECT, $dataRecovery['idrecovery'], MCRYPT_MODE_ECB));
-                $code = base64_encode($dataRecovery['idrecovery']); // TODO: Verificar uma forma de criptogravar e decriptografar
-                $pathLink = ($data['inadmin'] === true) ? 'admin/' : '';
-                $link = "http://store.curso.com.br/{$pathLink}forgot/reset?code={$code}";
+                
+                $code = Encryption::Encrypt($dataRecovery['idrecovery']);
+                $pathLevel = ($data['inadmin'] === true) ? 'admin/' : '';
+                $link = "http://store.curso.com.br/{$pathLevel}forgot/reset?code={$code}";
                 $mailer = new Mailer($data['desemail'], $data['desperson'], "Redefinir senha da Loja Hortfruit", "forgot",
                     array(
                         "name"=>$data['desperson'],
@@ -197,7 +198,7 @@ class User extends Model{
     public static function validForgotDescrypt($code)
     {
         // $idrecovery = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, User::SECRECT, base64_decode($code), MCRYPT_MODE_ECB);
-        $idrecovery = base64_decode($code);
+        $idrecovery = Encryption::Decrypt($code);
         $sql = new Sql;
         $res = $sql->select("
             SELECT * FROM tb_userspasswordsrecoveries a
