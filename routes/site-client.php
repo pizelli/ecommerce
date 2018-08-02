@@ -94,7 +94,7 @@ $app->get('/forgot/sent', function(){
 });
 
 $app->get('/forgot/reset', function(){
-    $user = User::validForgotDescrypt($_GET['code']);
+    $user = User::validForgotDecrypt($_GET['code']);
     $page = new Page;
     $page->setTpl('forgot-reset', array(
         "name" => $user["desperson"],
@@ -103,7 +103,7 @@ $app->get('/forgot/reset', function(){
 });
 
 $app->post('/forgot/reset', function(){
-    $forgot = User::validForgotDescrypt($_POST['code']);
+    $forgot = User::validForgotDecrypt($_POST['code']);
     User::setForgotUsed($forgot['idrecovery']);
     $user = new User;
     $user->get((int)$forgot['iduser']);

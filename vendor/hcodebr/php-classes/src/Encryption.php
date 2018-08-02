@@ -5,25 +5,21 @@ namespace Hcode;
 class Encryption
 {
     const SECRET = "123qwe";
-    const CIPHER = "aes-128-gcm";
+    const CIPHER = "aes-256-cbc";
 
     public static function Encrypt($str, $base = true)
     {
-        $ivlen = openssl_cipher_iv_length(self::CIPHER);
-        $iv = openssl_random_pseudo_bytes($ivlen);
-        $ciphertext = openssl_encrypt($str, self::CIPHER, self::SECRET, $options=0, $iv, $tag);
-        $dados = array(
-            'iv'=>$iv,
-            'tag'=>$tag,
-            'text'=>$ciphertext
-        );
-        return ($base) ? base64_encode(serialize($dados)) : serialize($dados);
+        $iv = random_byte(openssl_cipher_iv_length(self::CIPHER));
+        $ciphertext = openssl_encrypt($str, self::CIPHER, self::SECRET, 0, $iv);
+        return ($base) ? base64_encode($dados) : $dados;
     }
 
     public static function Decrypt($str, $base = true)
     {
-        $d = ($base) ? unserialize(base64_decode($str)) : unserialize($str);
-        return openssl_decrypt($d['text'], self::CIPHER, self::SECRET, $options=0, $d['iv'], $d['tag']);
+        $str = ($base) ? base64_decode($str) : $str;
+        $code = mb_substr($str, openssl_cipher_iv_length(self::CIPHER), null, '8bit');
+        $iv = mb_substr($str, 0, openssl_cipher_iv_length(self::CIPHER), '8bit');;
+        return openssl_decrypt($code, self::CIPHER, self::SECRET, 0, $iv);
     }
 
 }
