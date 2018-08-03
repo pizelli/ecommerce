@@ -70,6 +70,14 @@ class Product extends Model{
         $this->setdesphoto($url);
     }
 
+    public static function checkDesUrl($desurl):string
+    {
+        $desurl = str_replace(' ', '-', strtolower(trim($desurl)));
+        $sql = new Sql;
+        $res = $sql->select("SELECT * FROM tb_products WHERE desurl = :desurl", [':desurl'=>$desurl]);
+        return (count($res) > 0) ? self::checkDesUrl("{$desurl}".rand(1,10)) : $desurl;
+    }
+
     public function getValues()
     {
         $this->checkFoto();
@@ -79,25 +87,27 @@ class Product extends Model{
 
     public function setPhoto($file)
     {
-        $ext = explode('.', $file['name']);
-        $ext = end($ext);
-        switch ($ext)
-        {
-            case 'jpg':
-            case 'jpeg':
-                $image = imagecreatefromjpeg($file['tmp_name']);
-            break;
-            case 'gif':
-                $image = imagecreatefromgif($file['tmp_name']);
-            break;
-            case 'png':
-                $image = imagecreatefrompng($file['tmp_name']);
-            break;
+        if(strlen($file['name']) > 0){
+            $ext = explode('.', $file['name']);
+            $ext = end($ext);
+            switch ($ext)
+            {
+                case 'jpg':
+                case 'jpeg':
+                    $image = imagecreatefromjpeg($file['tmp_name']);
+                break;
+                case 'gif':
+                    $image = imagecreatefromgif($file['tmp_name']);
+                break;
+                case 'png':
+                    $image = imagecreatefrompng($file['tmp_name']);
+                break;
+            }
+            $dist = PATH_IMGS . $this->getidproduct() . ".jpg";
+            imagejpeg($image, $dist);
+            imagedestroy($image);
+            $this->checkFoto();
         }
-        $dist = PATH_IMGS . $this->getidproduct() . ".jpg";
-        imagejpeg($image, $dist);
-        imagedestroy($image);
-        $this->checkFoto();
     }
 
     public function getFromURL($desurl)

@@ -37,6 +37,7 @@ $app->post("/admin/products/create", function(){
     User::verifyLogin();
     $prod = new Product;
     $prod->setData($_POST);
+    $prod->setdesurl(Product::checkDesUrl($prod->getdesproduct()));
     $prod->save();
     header("Location: /admin/products");
     exit();
