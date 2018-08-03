@@ -233,7 +233,7 @@ class User extends Model{
     {
         $sql = new Sql;
         $sql->query("UPDATE tb_users SET despassword = :password WHERE iduser = :iduser", array(
-            ":password" => $password,
+            ":password" => User::getPasswordHash($password),
             ":iduser" => $this->getiduser()
         ));
     }
