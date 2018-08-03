@@ -71,8 +71,7 @@ $app->post('/admin/forgot/reset', function(){
     User::setForgotUsed($forgot['idrecovery']);
     $user = new User;
     $user->get((int)$forgot['iduser']);
-    $password = password_hash($_POST['password'], PASSWORD_BCRYPT, ['cost' => 12]);
-    $user->setPassword($password);
+    $user->setPassword($_POST['password']);
 
     $page = new PageAdmin([
         'header'=>false,

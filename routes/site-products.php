@@ -13,3 +13,11 @@ $app->get("/products/:desurl", function($desurl){
     ]);
 });
 
+$app->get("/products", function(){
+    $products = Product::listAll();
+    $pg = new Page;
+    $pg->setTpl("products", [
+        'products'=>Product::checkList($products)
+    ]);
+});
+
