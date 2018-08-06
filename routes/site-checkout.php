@@ -17,15 +17,17 @@ $app->get("/checkout", function(){
         $cart->setdeszipcode($_GET['zipcode']);
         $cart->save();
         $cart->getCalculateTotal();
-    }else{
-        $address->setdesaddress('');
-        $address->setdescomplement('');
-        $address->setdesdistrict('');
-        $address->setdescity('');
-        $address->setdescountry('');
-        $address->setdesstate('');
-        $address->setdeszipcode('');
     }
+
+    if(!$address->getdesaddress()) $address->setdesaddress('');
+    if(!$address->getdesnumber()) $address->setdesnumber('');
+    if(!$address->getdescomplement()) $address->setdescomplement('');
+    if(!$address->getdesdistrict()) $address->setdesdistrict('');
+    if(!$address->getdescity()) $address->setdescity('');
+    if(!$address->getdescountry()) $address->setdescountry('');
+    if(!$address->getdesstate()) $address->setdesstate('');
+    if(!$address->getdeszipcode()) $address->setdeszipcode('');
+
     $page = new Page;
     $page->setTpl("checkout", [
         'cart' => $cart->getValues(),
@@ -43,6 +45,10 @@ $app->post("/checkout", function(){
     }
     if(!isset($_POST['desaddress']) || $_POST['desaddress']===''){
         Address::setMsgError("Informe o Endereço.");
+        goURL("/checkout");
+    }
+    if(!isset($_POST['desnumber']) || $_POST['desnumber']===''){
+        Address::setMsgError("Informe o número.");
         goURL("/checkout");
     }
     if(!isset($_POST['desdistrict']) || $_POST['desdistrict']===''){
@@ -77,7 +83,6 @@ $app->post("/checkout", function(){
         'vltotal' => ($cart->getvltotal())
     ]);
     $order->save();
-
     goURL("/order/".$order->getidorder());
 });
 
