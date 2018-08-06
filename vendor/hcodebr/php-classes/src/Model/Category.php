@@ -35,7 +35,9 @@ class Category extends Model{
         $res = $sql->select("SELECT * FROM tb_categories WHERE idcategory = :id", array(
             ":id" => $id
         ));
-        $this->setData($res[0]);
+        if(count($res) > 0){
+            $this->setData($res[0]);
+        }
     }
 
     public static function updateFile()

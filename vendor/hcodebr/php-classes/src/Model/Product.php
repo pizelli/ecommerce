@@ -2,6 +2,7 @@
 
 namespace Hcode\Model;
 
+use \Hcode\ResizeImage;
 use \Hcode\Model;
 use \Hcode\DB\Sql;
 
@@ -88,24 +89,8 @@ class Product extends Model{
     public function setPhoto($file)
     {
         if(strlen($file['name']) > 0){
-            $ext = explode('.', $file['name']);
-            $ext = end($ext);
-            switch ($ext)
-            {
-                case 'jpg':
-                case 'jpeg':
-                    $image = imagecreatefromjpeg($file['tmp_name']);
-                break;
-                case 'gif':
-                    $image = imagecreatefromgif($file['tmp_name']);
-                break;
-                case 'png':
-                    $image = imagecreatefrompng($file['tmp_name']);
-                break;
-            }
             $dist = PATH_IMGS . $this->getidproduct() . ".jpg";
-            imagejpeg($image, $dist);
-            imagedestroy($image);
+            ResizeImage::resize($file, $dist);
             $this->checkFoto();
         }
     }
