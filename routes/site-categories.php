@@ -18,8 +18,8 @@ $app->get('/categories/:idcategory', function($idcategory){
     }
     $page = new Page;
     $page->setTpl("category", array(
-        'category' => $cat->getValues(),
-        'products' => $pagination['data'],
+        'category' => (count($cat->getValues()) > 0) ? $cat->getValues() : array('descategory'=>"Categoria inválida."),
+        'products' => (count($pagination['data']) > 0) ? $pagination['data'] : [],
         'pages' => $pages
     ));
 });
