@@ -7,10 +7,6 @@ use Rain\Tpl;
 class Mailer
 {
 
-    const USERNAME = "";
-    const PASSWORD = "";
-    const NAMEFROM = "Hcod Store";
-
     private $mail;
 
     public function __construct($toAddress, $toName, $subject, $tplName, $data = array())
@@ -33,14 +29,14 @@ class Mailer
         $this->mail->isSMTP();
         $this->mail->SMTPDebug = 1;
         $this->mail->Debugoutput = 'html';
-        $this->mail->Host = 'smtp.seudominio.com.br';
-        $this->mail->Port = 587;
-        $this->mail->SMTPSecure = 'tls';
+        $this->mail->Host = MAIL_ADDRESS;
+        $this->mail->Port = MAIL_PORT;
+        $this->mail->SMTPSecure = MAIL_SECURE;
         $this->mail->SMTPAuth = true;
-        $this->mail->Username = self::USERNAME;
-        $this->mail->Password = self::PASSWORD;
-        $this->mail->setFrom(self::USERNAME, self::NAMEFROM);
-        $this->mail->addAddress($toAddress,$toName);
+        $this->mail->Username = MAIL_USER;
+        $this->mail->Password = MAIL_PASS;
+        $this->mail->setFrom(MAIL_USER, SITE_TITLE);
+        $this->mail->addAddress($toAddress, $toName);
         $this->mail->Subject = $subject;
         $this->mail->msgHTML($html);
         $this->mail->AltBody = 'This is a plain-text message body';

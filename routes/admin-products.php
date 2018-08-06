@@ -39,6 +39,7 @@ $app->post("/admin/products/create", function(){
     $prod->setData($_POST);
     $prod->setdesurl(Product::checkDesUrl($prod->getdesproduct()));
     $prod->save();
+    $prod->setPhoto($_FILES['file']);
     header("Location: /admin/products");
     exit();
 });

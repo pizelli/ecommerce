@@ -39,29 +39,30 @@ $app->get("/checkout", function(){
 
 $app->post("/checkout", function(){
     User::verifyLogin(false);
+    $zipcode = (isset($_POST['zipcode'])) ? "?zipcode=" . $_POST['zipcode'] : '';
     if(!isset($_POST['zipcode']) || $_POST['zipcode']===''){
         Address::setMsgError("Informe o CEP.");
-        goURL("/checkout");
+        goURL("/checkout{$zipcode}");
     }
     if(!isset($_POST['desaddress']) || $_POST['desaddress']===''){
         Address::setMsgError("Informe o Endereço.");
-        goURL("/checkout");
+        goURL("/checkout{$zipcode}");
     }
     if(!isset($_POST['desnumber']) || $_POST['desnumber']===''){
         Address::setMsgError("Informe o número.");
-        goURL("/checkout");
+        goURL("/checkout{$zipcode}");
     }
     if(!isset($_POST['desdistrict']) || $_POST['desdistrict']===''){
         Address::setMsgError("Informe o Bairro.");
-        goURL("/checkout");
+        goURL("/checkout{$zipcode}");
     }
     if(!isset($_POST['descity']) || $_POST['descity']===''){
         Address::setMsgError("Informe a Cidade.");
-        goURL("/checkout");
+        goURL("/checkout{$zipcode}");
     }
     if(!isset($_POST['desstate']) || $_POST['desstate']===''){
         Address::setMsgError("Informe o Estado.");
-        goURL("/checkout");
+        goURL("/checkout{$zipcode}");
     }
     $user = User::getFromSession();
 
@@ -83,7 +84,7 @@ $app->post("/checkout", function(){
         'vltotal' => ($cart->getvltotal())
     ]);
     $order->save();
-    goURL("/order/".$order->getidorder());
+    goURL("/order/".$order->getidorder()."/clear");
 });
 
 $app->get('/profile/orders', function(){
