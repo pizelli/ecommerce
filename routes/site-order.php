@@ -3,6 +3,12 @@
 use \Hcode\Page;
 use \Hcode\Model\User;
 use \Hcode\Model\Order;
+use \Hcode\Model\Cart;
+
+$app->get("/order/:idorder/clear", function($idorder){
+    Cart::clearCart();
+    goURL("/order/{$idorder}");
+});
 
 $app->get("/order/:idorder", function($idorder){
     User::verifyLogin(false);
@@ -40,13 +46,13 @@ $app->get('/boleto/:idorder', function($idorder){
     $dadosboleto["endereco2"] = utf8_encode("{$order->getdescity()} - {$order->getdesstate()} -  CEP: {$order->getdeszipcode()}");
 
     // INFORMACOES PARA O CLIENTE
-    $dadosboleto["demonstrativo1"] = "Pagamento de Compra na Loja Hortfruit Digital E-commerce";
+    $dadosboleto["demonstrativo1"] = "Pagamento de Compra na Loja " . SITE_TITLE;
     $dadosboleto["demonstrativo2"] = "Taxa bancária - R$ 0,00";
     $dadosboleto["demonstrativo3"] = "";
     $dadosboleto["instrucoes1"] = "- Sr. Caixa, cobrar multa de 2% após o vencimento";
     $dadosboleto["instrucoes2"] = "- Receber até 10 dias após o vencimento";
-    $dadosboleto["instrucoes3"] = "- Em caso de dúvidas entre em contato conosco: suporte@loja.iexchange.com.br";
-    $dadosboleto["instrucoes4"] = "&nbsp; Emitido pelo sistema Projeto Loja Hortfruit Digital E-commerce - loja.iexchange.com.br";
+    $dadosboleto["instrucoes3"] = "- Em caso de dúvidas entre em contato conosco: " . SITE_EMAIL;
+    $dadosboleto["instrucoes4"] = "&nbsp; Emitido pelo sistema " . SITE_TITLE . " - " . SITE_EMAIL;
 
     // DADOS OPCIONAIS DE ACORDO COM O BANCO OU CLIENTE
     $dadosboleto["quantidade"] = "";
@@ -60,19 +66,19 @@ $app->get('/boleto/:idorder', function($idorder){
 
 
     // DADOS DA SUA CONTA - ITAÚ
-    $dadosboleto["agencia"] = "1690"; // Num da agencia, sem digito
-    $dadosboleto["conta"] = "48781";	// Num da conta, sem digito
-    $dadosboleto["conta_dv"] = "2"; 	// Digito do Num da conta
+    $dadosboleto["agencia"] = BANCO_AGENCIA; // Num da agencia, sem digito
+    $dadosboleto["conta"] = BANCO_CONTA;	// Num da conta, sem digito
+    $dadosboleto["conta_dv"] = BANCO_DIGITO; 	// Digito do Num da conta
 
     // DADOS PERSONALIZADOS - ITAÚ
-    $dadosboleto["carteira"] = "175";  // Código da Carteira: pode ser 175, 174, 104, 109, 178, ou 157
+    $dadosboleto["carteira"] = BANCO_CARTEIRA;  // Código da Carteira: pode ser 175, 174, 104, 109, 178, ou 157
 
     // SEUS DADOS
-    $dadosboleto["identificacao"] = "Hortfruit Digital E-commerce";
-    $dadosboleto["cpf_cnpj"] = "00.000.000/0000-00";
-    $dadosboleto["endereco"] = "Rua não sei onde fica, 666 - Indefinido, 66666-666";
-    $dadosboleto["cidade_uf"] = "Inferno de Dante - RJ";
-    $dadosboleto["cedente"] = strtoupper("Hortfruit Digital E-commerce");
+    $dadosboleto["identificacao"] = SITE_TITLE;
+    $dadosboleto["cpf_cnpj"] = SITE_CPF_CNPJ;
+    $dadosboleto["endereco"] = SITE_ENDERECO;
+    $dadosboleto["cidade_uf"] = SITE_CIDADE_UF;
+    $dadosboleto["cedente"] = strtoupper(SITE_TITLE);
 
     // NÃO ALTERAR!
     $path = PATH_ROOT . DS . 'res' . DS . 'boletophp' . DS .'include' . DS;
