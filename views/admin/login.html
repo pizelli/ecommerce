@@ -25,6 +25,14 @@
   <![endif]-->
 </head>
 <body class="hold-transition login-page">
+  <div class="login-box">
+      {if="$error != ''"}
+      <div class="alert alert-danger">
+        <p>{$error}</p>
+      </div>
+    {/if}
+
+  </div>
 <div class="login-box">
   <!-- /.login-logo -->
   <div class="login-box-body">

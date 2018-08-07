@@ -14,13 +14,19 @@ $app->get('/admin/login', function() {
         'header' => false,
         'footer' => false
     ]);
-    $page->setTpl("login");
+    $page->setTpl("login", [
+        'error' => User::getError()
+    ]);
 });
 
 $app->post('/admin/login', function() {
-    User::login($_POST['login'], $_POST['password']);
-    header("Location: /admin");
-    exit;
+    try{
+        User::login($_POST['login'], $_POST['password']);
+    }
+    catch(\Exception $er){
+        User::setError($er->getMessage());
+    }
+    goURL("/admin");
 });
 
 $app->get('/admin/logout', function(){
